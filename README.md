@@ -133,3 +133,4 @@ Running `npm test` executes 9 automated tests against Ganache:
 - **ethers.js v6** (`https://docs.ethers.org/v6/`) for Web3 provider, contract interaction, and event querying.
 - **Solidity (`solc` 0.8.x)** and **Ganache** for smart contract compilation and local Ethereum testing.
 - Course starter Python `web3.py` connection pattern provided in DS 441 A.
+- AI coding assistant used for project scaffolding, smart contract/UI implementation, and debugging support.

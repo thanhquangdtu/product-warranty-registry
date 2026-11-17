@@ -1,0 +1,20 @@
+{
+  "name": "product-warranty-registry",
+  "version": "1.0.0",
+  "description": "DS 441 A Individual Mini Project - Product Warranty Registry Smart Contract & Web3 DApp",
+  "author": "Le Thanh Quang (29211120739)",
+  "license": "MIT",
+  "scripts": {
+    "compile": "node scripts/compile.js",
+    "deploy": "node scripts/deploy.js",
+    "test": "node scripts/test.js",
+    "start": "node scripts/serve.js"
+  },
+  "dependencies": {
+    "ethers": "^6.13.4"
+  },
+  "devDependencies": {
+    "ganache": "^7.9.2",
+    "solc": "^0.8.28"
+  }
+}

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Warranty Registry | DS 441 A</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div>
+        <h1>Product Warranty Registry</h1>
+        <p class="subtitle">
+          DS 441 A - Blockchain: Theory &amp; Practices &bull;
+          Student: <strong>Lê Thành Quang</strong> (ID: <code>29211120739</code>)
+        </p>
+      </div>
+      <div id="connectionBadge" class="badge badge-offline">Disconnected</div>
+    </header>
+
+    <!-- Wallet & Contract Connection -->
+    <section class="card">
+      <h2>1. Wallet &amp; Contract Connection (Ganache)</h2>
+      <div class="grid-2">
+        <div>
+          <label for="rpcUrlInput">Ganache RPC URL</label>
+          <input id="rpcUrlInput" type="text" value="http://127.0.0.1:7545" />
+        </div>
+        <div>
+          <label for="contractAddressInput">Deployed Contract Address</label>
+          <input id="contractAddressInput" type="text" placeholder="0x..." />
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button id="connectGanacheBtn" class="btn btn-primary">Connect to Ganache RPC</button>
+        <button id="connectMetaMaskBtn" class="btn btn-secondary">Connect MetaMask</button>
+        <button id="refreshBtn" class="btn btn-outline" disabled>Refresh State</button>
+      </div>
+
+      <div id="ganacheAccountRow" class="account-switcher hidden">
+        <label for="ganacheAccountSelect">Active Ganache Test Account (for multi-account demo)</label>
+        <select id="ganacheAccountSelect"></select>
+      </div>
+
+      <div class="status-grid">
+        <div class="status-item">
+          <span class="label">Connected Account</span>
+          <span id="connectedAccount" class="mono">-</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Account Balance</span>
+          <span id="accountBalance">-</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Network / Chain ID</span>
+          <span id="networkInfo">-</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Contract Manufacturer</span>
+          <span id="manufacturerAddress" class="mono">-</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Current Role</span>
+          <span id="accountRole">-</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Registered Products</span>
+          <span id="productCount">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Transaction Status Banner -->
+    <section id="txStatusBox" class="tx-box hidden">
+      <div class="tx-header">
+        <strong id="txStatusTitle">Transaction Status</strong>
+        <span id="txStatusBadge" class="badge">Pending</span>
+      </div>
+      <p id="txStatusMessage" class="tx-message"></p>
+    </section>
+
+    <!-- Actions: Register & Transfer -->
+    <div class="grid-2">
+      <section class="card">
+        <h2>2. Register Product (Manufacturer Only)</h2>
+        <p class="hint">
+          Only the contract manufacturer can register a product. Trying with another account will be rejected on-chain.
+        </p>
+        <form id="registerForm">
+          <label for="regProductId">Product ID</label>
+          <input id="regProductId" type="text" placeholder="e.g. LAPTOP-2026-001" required />
+
+          <label for="regOwner">Initial Owner Address</label>
+          <select id="regOwnerQuickPick" class="quick-pick">
+            <option value="">-- Quick-pick an account --</option>
+          </select>
+          <input id="regOwner" type="text" list="ganacheAddressList" placeholder="0x..." required />
+
+          <label for="regExpiration">Warranty Expiration Date &amp; Time</label>
+          <input id="regExpiration" type="datetime-local" required />
+
+          <button type="submit" class="btn btn-primary full-width">Register Product</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>3. Transfer Ownership (Current Owner Only)</h2>
+        <p class="hint">
+          Only the current owner can transfer ownership. Former owners or non-owners will be rejected on-chain.
+        </p>
+        <form id="transferForm">
+          <label for="transferProductId">Product ID</label>
+          <input id="transferProductId" type="text" placeholder="e.g. LAPTOP-2026-001" required />
+
+          <label for="transferNewOwner">New Owner Address</label>
+          <select id="transferOwnerQuickPick" class="quick-pick">
+            <option value="">-- Quick-pick an account --</option>
+          </select>
+          <input id="transferNewOwner" type="text" list="ganacheAddressList" placeholder="0x..." required />
+
+          <button type="submit" class="btn btn-primary full-width">Transfer Ownership</button>
+        </form>
+      </section>
+    </div>
+
+    <datalist id="ganacheAddressList"></datalist>
+
+    <!-- Lookup Product Warranty -->
+    <section class="card">
+      <h2>4. Check Product Warranty Validity</h2>
+      <form id="lookupForm" class="inline-form">
+        <input id="lookupProductId" type="text" placeholder="Enter Product ID (e.g. LAPTOP-2026-001)" required />
+        <button type="submit" class="btn btn-primary">Check Warranty</button>
+      </form>
+      <div id="lookupResult" class="lookup-result hidden"></div>
+    </section>
+
+    <!-- All Registered Products Table -->
+    <section class="card">
+      <h2>5. Registered Products Registry</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Product ID</th>
+              <th>Current Owner</th>
+              <th>Registered At</th>
+              <th>Expires At</th>
+              <th>Warranty Status</th>
+            </tr>
+          </thead>
+          <tbody id="productsTableBody">
+            <tr>
+              <td colspan="5" class="empty-cell">Connect to Ganache and load a deployed contract to view products.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- On-Chain Events Log -->
+    <section class="card">
+      <h2>6. Smart Contract Event Log</h2>
+      <p class="hint">Live on-chain events emitted by <code>ProductWarrantyRegistry</code>.</p>
+      <ul id="eventsList" class="events-list">
+        <li class="empty-cell">No events loaded yet.</li>
+      </ul>
+    </section>
+  </div>
+
+  <script src="contract-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
